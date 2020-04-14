@@ -1,0 +1,17 @@
+doctype html
+html
+    head
+        title Page #{name}
+        meta(charset='utf-8')
+        link(rel='stylesheet', href='https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css')
+    body
+            form.w-75.mx-auto.mt-5(method='POST' action='/signin')
+                div.form-group
+                    label(for='user') User:
+                    input#user.form-control(type='user', placeholder='Name' name='name')
+                    label(for='email') Email:
+                    input#user.form-control(type='email', placeholder='Email' name='email')
+                div.form-group
+                    label(for='pw') Password:
+                    input#pw.form-control(type='password' name='password' placeholder="Password")
+                button.btn.btn-primary(type='submit') Login

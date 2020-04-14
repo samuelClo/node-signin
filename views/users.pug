@@ -1,0 +1,13 @@
+doctype html
+html
+    head
+        title Page user
+        meta(charset='utf-8')
+        link(rel='stylesheet', href='https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css')
+    body
+        h1 User list : 
+        ul
+            each user in users
+                li
+                    a(href=`http://localhost:3000/user/${user._id}`)= user.name
+                    a(href=`http://localhost:3000/user/delete/${user._id}`) delete this user 
