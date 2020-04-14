@@ -103,12 +103,6 @@ app.get('/confirm/:token', (req, res) => {
 		}
     })
 })
-app.get('/signin', (req, res) => {
-    res.render('login.pug')
-})
-app.get('/signup', (req, res) => {
-    res.render('register.pug')
-})
 
 app.get('/user/delete/:id', async (req, res) => {
 	const { id: _id} = req.params
@@ -123,6 +117,10 @@ app.get('/user/delete/:id', async (req, res) => {
 	} catch (err) {
 		return res.status(500).send('Erreur du serveur')
 	}
+})
+
+app.get('/signin', (req, res) => {
+    res.render('login.pug')
 })
 
 app.get('/signup', (req, res) => {
@@ -154,7 +152,6 @@ app.get('/user/:id', (req, res) => {
 		.catch(() => res.status(500).send(`Internal server error`))
 })
 
-
 app.post('/signin', urlencodedParser, passport.authenticate('local', {
 	successRedirect: '/user',
 	failureRedirect: '/signin'
@@ -180,15 +177,14 @@ app.post('/signup', urlencodedParser, async (req, res) => {
 		const savedUser = await newUser.save()
 		const userId = savedUser._id
 		const token = new Token({userId: userId})
-
-		await token.save()
+		const savedToken = await token.save()
 
 		const mailOptions = {
 			from: GMAIL_EMAIL, // sender address
 			to: email, // list of receivers
 			subject: 'Test sending mail with node', // Subject line
 			html: `<p> Pour créer votre compte veuillez confirmez votre compte en cliquant ici : <br />
-				   http://localhost:3000/confirm/${token.label}</p>`
+				   http://localhost:3000/confirm/${savedToken.label}</p>`
 		};
 
 		transporter.sendMail(mailOptions, (err, info) => {
@@ -223,33 +219,6 @@ app.get('/user/:_id', async (req, res) => {
 		return res.send(user)
 	} catch (err) {
 		console.log(err)
-		return res.status(500).send('Erreur du serveur')
-	}
-})
-
-app.put('/user/:_id', urlencodedParser, async (req, res) => {
-	const { _id } = req.params
-	const { name, password } = req.body
-	try {
-		const user = await User.findByIdAndUpdate(_id,  { $set: { name, password } }, { new: true })
-		if (!user)  {
-			return res.status(404).send(`Il n’y a pas d’utilisateur ${_id}`)
-		}
-		return res.send(`Utilisateur ${user._id} modifié`)
-	} catch (err) {
-		return res.status(500).send('Erreur du serveur')
-	}
-})
-
-app.delete('/user/:_id', async (req, res) => {
-	const { _id } = req.params
-	try {
-		const user = await User.findByIdAndDelete(_id)
-		if (!user) {
-			return res.status(404).send(`Il n’y a pas d’utilisateur ${_id}`)
-		}
-		return res.send(`L’utilisateur ${user._id} a bien été supprimé`)
-	} catch (err) {
 		return res.status(500).send('Erreur du serveur')
 	}
 })

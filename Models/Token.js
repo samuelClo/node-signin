@@ -19,14 +19,19 @@ const tokenSchema = new Schema({
         required: false,
         default: createToken(10),
         createdAt: new Date,
-        index: { expires: 60*1 },
+        expires: '1m',
     },
     userId: {
         type: String,
         required: true,
         expireAfterSeconds: 1,
-        index: { expires: 60*1 },
+        expires: '1m',
     },
+    createdAt: {
+        type: Date,
+        expires: '1h',
+        default: Date.now
+    }
 }, { collection: 'tokens' })
 
 
